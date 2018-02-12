@@ -1,4 +1,5 @@
 require 'rails/generators/migration'
+require 'rails/generators'
 
 module SystemVariable
   module Generators
@@ -15,6 +16,14 @@ module SystemVariable
         end
       end
 
+      def self.migration_parent
+        Rails::VERSION::MAJOR == 4 ? 'ActiveRecord::Migration' : "ActiveRecord::Migration[#{ActiveRecord::Migration.current_version}]"
+      end
+
+      def self.table_name
+        :system_variables
+      end
+
       source_root File.expand_path("../templates", __FILE__)
 
       def copy_migration
@@ -24,7 +33,11 @@ module SystemVariable
       private
 
       def migration_parent
-        Rails::VERSION::MAJOR == 4 ? 'ActiveRecord::Migration' : "ActiveRecord::Migration[#{ActiveRecord::Migration.current_version}]"
+        self.class.migration_parent
+      end
+
+      def table_name
+        self.class.table_name
       end
     end
   end
