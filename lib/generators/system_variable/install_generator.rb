@@ -1,4 +1,3 @@
-require 'rails/generators/migration'
 require 'rails/generators'
 
 module SystemVariable
@@ -17,11 +16,8 @@ module SystemVariable
       end
 
       def self.migration_parent
+        # TODO: is this necessary? try removing it and putting the logic in the instance method
         Rails::VERSION::MAJOR == 4 ? 'ActiveRecord::Migration' : "ActiveRecord::Migration[#{ActiveRecord::Migration.current_version}]"
-      end
-
-      def self.table_name
-        :system_variables
       end
 
       source_root File.expand_path("../templates", __FILE__)
@@ -37,7 +33,7 @@ module SystemVariable
       end
 
       def table_name
-        self.class.table_name
+        SystemVariable::Helper.table_name
       end
     end
   end

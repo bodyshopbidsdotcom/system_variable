@@ -1,10 +1,9 @@
-# TODO remove these two by using a separate helper for L7
-require 'generators/system_variable/install_generator'
 require 'active_record'
+require 'system_variable/helper'
 
 module SystemVariable
   class Model < ::ActiveRecord::Base
-    self.table_name = SystemVariable::Generators::InstallGenerator.table_name
+    self.table_name = SystemVariable::Helper.table_name
 
     validates :name, :presence => true
 
