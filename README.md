@@ -14,21 +14,82 @@ gem 'system_variable'
 
 And then execute:
 
-    $ bundle
+    $ bundle i
 
 Or install it yourself as:
 
     $ gem install system_variable
 
+Once installed, install any SystemVariable migrations
+
+    $ rake system_variable:install:migrations
+
+## Configuration
+
+SystemVariable can be configured using an initializer file in your rails application.
+
+```ruby
+# config/initializers/system_variable.rb
+
+SystemVariable.configure do |config|
+  config.external_sources = [ENV] # An array of variable sources, such as ENV or AWS Secrets.
+                                  # Each element should be a Hash or conform to a Hash interface.
+                                  # When fetching values, external sources are checked in the order they're defined here.
+                                  # Default: [ENV]
+  @cache_key = 'system_variable'  # Allows the key used by Rails cache to be configurable
+                                  # Default: 'system_variable'
+  @caching_enabled = true         # Enables caching of native SystemVariable variables.
+                                  # Default: true
+end
+```
+
 ## Usage
 
-TODO: Write usage instructions here
+Fetching variables
+```ruby
+SystemVariable.fetch('EXTERNAL_APPLICATION_URL') # 'https://externalurl.test
+```
+
+Return default values if variable isn't found, or the found value is `nil`.
+```ruby
+SystemVariable.fetch('EXTERNAL_APPLICATION_URL', default: 'http://defaulturl.test') # 'http://defaulturl.test'
+```
+
+Check if a variable key is defined
+```ruby
+SystemVariable.exists?('EXTERNAL_APPLICATION_URL')
+```
+
+NOTE: All lookup methods (fetch/exists?) will look at native SystemVariable values _first_, then check any defined external sources.
+
+Create a new variable
+```ruby
+SystemVariable::Variable.create(key: 'MY_NEW_VARIABLE', value: 'foo')
+```
+
+Create a new variable and assign it to a category
+```ruby
+SystemVariable::Variable.create(key: 'MY_NEW_VARIABLE', value: 'foo', category_attributes: { name: 'My Category' })
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Install Dependencies
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    $ bundle i
+
+Setup the database
+
+    $ bundle exec rake db:create
+    $ bundle exec rake db:schema:load
+
+Run migrations
+
+    $ bundle exec rake db:migrate
+
+Run tests
+
+    $ bundle exec rspec
 
 ## Contributing
 
