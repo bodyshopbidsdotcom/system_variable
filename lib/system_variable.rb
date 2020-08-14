@@ -1,6 +1,5 @@
 require 'system_variable/engine'
 require 'system_variable/config'
-require 'pry'
 
 module SystemVariable
   class << self
