@@ -35,7 +35,7 @@ module SystemVariable
     class << self
       def all_values
         if SystemVariable.config.caching_enabled
-          Rails.cache.fetch(SystemVariable.config.cache_key, expires_in: 24.hour) { self.hashify }
+          Rails.cache.fetch(SystemVariable.config.cache_key, expires_in: SystemVariable.config.cache_expiration) { self.hashify }
         else
           self.hashify
         end

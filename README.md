@@ -40,6 +40,8 @@ SystemVariable.configure do |config|
                                   # Default: 'system_variable'
   @caching_enabled = true         # Enables caching of native SystemVariable variables.
                                   # Default: true
+  @cache_expiration = 24.hours    # Sets expiration time on cached values
+                                  # Default: 24.hours
 end
 ```
 
