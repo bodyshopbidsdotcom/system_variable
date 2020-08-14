@@ -1,0 +1,100 @@
+# Generic
+mysql_env: &mysql_env
+  TZ: "/usr/share/zoneinfo/America/Chicago"
+
+wait_for_mysql: &wait_for_mysql
+  run:
+    name: Wait for db
+    command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+checkout: &checkout
+  checkout:
+    path: ~/system_variable
+
+ruby_defaults: &ruby_defaults
+  working_directory: ~/system_variable
+
+ruby_restore_cache: &ruby_restore_cache
+  restore_cache:
+    keys:
+      - system_variable-{{ checksum "Gemfile" }}
+      - system_variable-
+
+ruby_save_cache: &ruby_save_cache
+  save_cache:
+    key: system_variable-{{ checksum "Gemfile" }}
+    paths:
+      - vendor/bundle
+
+ruby_bundle: &ruby_bundle
+  run:
+    name: 'Install Dependencies'
+    command: |
+      gem install bundler
+      echo $GITHUB_OAUTH_CREDENTIALS
+      bundle config https://rubygems.pkg.github.com/bodyshopbidsdotcom $GITHUB_OAUTH_CREDENTIALS
+      bundle check || bundle install --jobs=4 --retry=3
+
+ruby_db_setup: &ruby_db_setup
+  run:
+    name: Database Setup
+    command: |
+      bundle exec rake db:create db:schema:load --trace RAILS_ENV=test
+      bundle exec rake db:test:prepare
+
+ruby_docker_env: &ruby_docker_env
+  RAILS_ENV: test
+  RACK_ENV: test
+
+image_defaults: &image_defaults
+  <<: *ruby_defaults
+  docker:
+    - image: circleci/ruby:2.5
+      environment: *ruby_docker_env
+    - image: circleci/mysql:5.7
+      environment: *mysql_env
+
+version: 2
+jobs:
+  build-and-test-rails:
+    <<: *ruby_defaults
+    <<: *image_defaults
+    steps:
+      - <<: *checkout
+      - <<: *ruby_restore_cache
+      - <<: *ruby_bundle
+      - <<: *ruby_save_cache
+      - <<: *wait_for_mysql
+      - <<: *ruby_db_setup
+      - run: bundle exec rspec
+  lint:
+    <<: *ruby_defaults
+    <<: *image_defaults
+    steps:
+      - <<: *checkout
+      - <<: *ruby_restore_cache
+      - <<: *ruby_bundle
+      - <<: *ruby_save_cache
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+  brakeman:
+    <<: *ruby_defaults
+    <<: *image_defaults
+    steps:
+      - <<: *checkout
+      - <<: *ruby_restore_cache
+      - <<: *ruby_bundle
+      - <<: *ruby_save_cache
+      - run:
+          name: Brakeman Security Scan
+          command: bundle exec brakeman
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-and-test-rails
+      - lint
+      - brakeman
