@@ -33,8 +33,12 @@ module SystemVariable
     end
 
     class << self
-      def cached_values
-        Rails.cache.fetch('system_variables', :expires_in => 24.hour) { self.hashify }
+      def all_values
+        if SystemVariable.config.caching_enabled
+          Rails.cache.fetch(SystemVariable.config.cache_key, :expires_in => 24.hour) { self.hashify }
+        else
+          self.hashify
+        end
       end
 
       def hashify
@@ -43,12 +47,12 @@ module SystemVariable
 
       def get(key)
         key = self.sanitize_key(key)
-        self.cached_values.dig(key)
+        self.all_values.dig(key)
       end
 
       def exists?(key)
         key = self.sanitize_key(key)
-        self.cached_values.key?(key)
+        self.all_values.key?(key)
       end
 
       def sanitize_key(key)
@@ -61,7 +65,7 @@ module SystemVariable
     end
 
     def clear_cache
-      Rails.cache.delete('system_variables')
+      Rails.cache.delete(SystemVariable.config.cache_key) if SystemVariable.config.caching_enabled
     end
   end
 end
