@@ -3,7 +3,6 @@ require 'system_variable/config'
 require 'pry'
 
 module SystemVariable
-
   class << self
     def configure
       yield(self.config) if block_given?

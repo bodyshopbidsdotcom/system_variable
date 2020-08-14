@@ -13,3 +13,9 @@ gemspec
 
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
+
+group :development, :test do
+  source 'https://rubygems.pkg.github.com/bodyshopbidsdotcom' do
+    gem 'snap-style', '2.0.0'
+  end
+end

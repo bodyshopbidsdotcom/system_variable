@@ -1,0 +1,38 @@
+inherit_gem:
+  snap-style:
+    - "rubocop/rubocop.yml"
+
+AllCops:
+  Exclude:
+    - 'db/migrate/*'
+    - 'spec/dummy/db/schema.rb'
+    - 'config/**/*'
+    - 'bin/*'
+    - 'vendor/**/*'
+    - 'spec/dummy/config/*'
+
+Rails:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedStyle: 'ruby19'
+
+# Don't require space around parameter defaults, def foo(msg="bar") vs def foo(msg = "bar")
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  Exclude:
+    - 'spec/**/*'
+
+# Only enforce block length outside of specs
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/AmbiguousBlockAssociation:
+    Exclude:
+    - 'spec/**/*'
+
+Metrics/PerceivedComplexity:
+    Max: 15

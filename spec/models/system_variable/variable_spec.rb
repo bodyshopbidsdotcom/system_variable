@@ -9,23 +9,22 @@ describe SystemVariable::Variable do
     it { is_expected.to validate_presence_of(:key) }
   end
 
-
   describe '#hashify' do
     let(:owner) { SystemVariable::DefaultOwner.create }
 
     it 'formats variables into a hash' do
-      variable_1 = create(:system_variable_variable, key: 'var1')
-      variable_2 = create(:system_variable_variable, key: 'var2')
-      variable_3 = create(:system_variable_variable, key: 'var3')
-      variable_4 = create(:system_variable_variable, key: 'var4')
+      variable1 = create(:system_variable_variable, key: 'var1')
+      variable2 = create(:system_variable_variable, key: 'var2')
+      variable3 = create(:system_variable_variable, key: 'var3')
+      variable4 = create(:system_variable_variable, key: 'var4')
 
       result = described_class.hashify
 
       expect(result.with_indifferent_access).to eq({
-        VAR1: variable_1.value,
-        VAR2: variable_2.value,
-        VAR3: variable_3.value,
-        VAR4: variable_4.value
+        VAR1: variable1.value,
+        VAR2: variable2.value,
+        VAR3: variable3.value,
+        VAR4: variable4.value
       }.with_indifferent_access)
     end
   end

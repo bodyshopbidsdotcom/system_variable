@@ -9,7 +9,7 @@ describe SystemVariable do
     end
 
     it 'returns value from ENV if not defined in SystemVariable' do
-      expect(ENV).to receive(:fetch).with("BAR", nil).and_return("ENV value")
+      expect(ENV).to receive(:fetch).with('BAR', nil).and_return('ENV value')
 
       expect(described_class.fetch('BAR')).to eq('ENV value')
     end
@@ -31,7 +31,7 @@ describe SystemVariable do
     end
 
     it 'returns true if found in ENV' do
-      expect(ENV).to receive(:key?).with("BAR").and_return(true)
+      expect(ENV).to receive(:key?).with('BAR').and_return(true)
 
       expect(described_class.exists?('BAR')).to eq(true)
     end
