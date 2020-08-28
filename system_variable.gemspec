@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'factory_bot_rails', '~> 5.1'
   spec.add_development_dependency 'faker', '~> 2.10'
+  spec.add_development_dependency 'figaro', '~> 1.2'
   spec.add_development_dependency 'generator_spec', '~> 0.9'
   spec.add_development_dependency 'mysql2', '~> 0.5'
   spec.add_development_dependency 'pry', '~> 0.12'
