@@ -45,12 +45,12 @@ module SystemVariable
         self.all.map { |variable| [variable.key, variable.value] }.to_h
       end
 
-      def get(key)
+      def fetch(key, default=nil)
         key = self.sanitize_key(key)
-        self.all_values.dig(key)
+        self.all_values.dig(key) || default
       end
 
-      def exists?(key)
+      def key?(key)
         key = self.sanitize_key(key)
         self.all_values.key?(key)
       end

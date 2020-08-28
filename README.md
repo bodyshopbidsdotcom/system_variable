@@ -32,16 +32,23 @@ SystemVariable can be configured using an initializer file in your rails applica
 # config/initializers/system_variable.rb
 
 SystemVariable.configure do |config|
-  config.external_sources = [ENV] # An array of variable sources, such as ENV or AWS Secrets.
-                                  # Each element should be a Hash or conform to a Hash interface.
-                                  # When fetching values, external sources are checked in the order they're defined here.
-                                  # Default: [ENV]
-  @cache_key = 'system_variable'  # Allows the key used by Rails cache to be configurable
-                                  # Default: 'system_variable'
-  @caching_enabled = true         # Enables caching of native SystemVariable variables.
-                                  # Default: true
-  @cache_expiration = 24.hours    # Sets expiration time on cached values
-                                  # Default: 24.hours
+  # An array of variable sources, such as ENV or AWS Secrets.
+  # Each element should be a Hash or conform to a Hash interface.
+  # When fetching values, external sources are checked in the order they're defined here.
+  # Default: [SystemVariable::Variable, ENV]
+  config.sources = [SystemVariable::Variable, ENV] 
+  
+  # Allows the key used by Rails cache to be configurable
+  # Default: 'system_variable'
+  @cache_key = 'system_variable'  
+ 
+  # Enables caching of native SystemVariable variables.
+  # Default: true
+  @caching_enabled = true 
+  
+  # Sets expiration time on cached values
+  # Default: 24.hours        
+  @cache_expiration = 24.hours    
 end
 ```
 

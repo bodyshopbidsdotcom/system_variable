@@ -29,27 +29,31 @@ describe SystemVariable::Variable do
     end
   end
 
-  describe '#get' do
+  describe '#fetch' do
     it 'retrieves values' do
       create(:system_variable_variable, key: 'var1', value: 'var1 value')
 
-      expect(described_class.get('var1')).to eq('var1 value')
+      expect(described_class.fetch('var1')).to eq('var1 value')
     end
 
     it 'returns nil if key does not exist and no default is specified' do
-      expect(described_class.get('fake_key')).to be_nil
+      expect(described_class.fetch('fake_key')).to be_nil
+    end
+
+    it 'returns nil if key does not exist and default is specified' do
+      expect(described_class.fetch('fake_key', 'foo')).to eq('foo')
     end
   end
 
-  describe '#exists?' do
+  describe '#key?' do
     it 'returns true if key exists' do
       create(:system_variable_variable, key: 'var1', value: 'var1 value')
 
-      expect(described_class.exists?('var1')).to eq(true)
+      expect(described_class.key?('var1')).to eq(true)
     end
 
     it 'returns false if key does not exists' do
-      expect(described_class.exists?('fake_key')).to eq(false)
+      expect(described_class.key?('fake_key')).to eq(false)
     end
   end
 

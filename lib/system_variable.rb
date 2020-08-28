@@ -12,12 +12,11 @@ module SystemVariable
     end
 
     def fetch(key, default: nil)
-      value = SystemVariable::Variable.get(key)
-      if value.nil?
-        config.external_sources.each do |source|
-          value = source.fetch(key, nil)
-          break unless value.nil?
-        end
+      value = nil
+
+      config.sources.each do |source|
+        value = source.fetch(key, nil)
+        break unless value.nil?
       end
 
       if value.nil?
@@ -28,7 +27,7 @@ module SystemVariable
     end
 
     def exists?(key)
-      SystemVariable::Variable.exists?(key) || config.external_sources.any? { |source| source.key? key }
+      config.sources.any? { |source| source.key? key }
     end
   end
 end
